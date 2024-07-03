@@ -38,5 +38,26 @@ jobs:
     - name: Install Buildozer
       run: pip install buildozer
 
+    - name: Generate buildozer.spec if not exists
+      run: |
+        if [ ! -f buildozer.spec ]; then
+          buildozer init
+        fi
+
+    - name: Customize buildozer.spec
+      run: |
+        sed -i 's/^# *title = .*/title = YourAppName/' buildozer.spec
+        sed -i 's/^# *package.name = .*/package.name = yourapp/' buildozer.spec
+        sed -i 's/^# *package.domain = .*/package.domain = org.yourdomain/' buildozer.spec
+        sed -i 's/^# *source.include_exts = .*/source.include_exts = py,png,jpg,kv,atlas/' buildozer.spec
+        sed -i 's/^# *version = .*/version = 0.1/' buildozer.spec
+        sed -i 's/^# *requirements = .*/requirements = python3,kivy,bleak/' buildozer.spec
+        sed -i 's/^# *orientation = .*/orientation = portrait/' buildozer.spec
+        sed -i 's/^# *source.include_patterns = .*/source.include_patterns = assets\/\*,images\/\*.png/' buildozer.spec
+        sed -i 's|^# *presplash.filename = .*|presplash.filename = %(source.dir)s/assets/presplash.png|' buildozer.spec
+        sed -i 's|^# *icon.filename = .*|icon.filename = %(source.dir)s/assets/icon.png|' buildozer.spec
+        sed -i 's/^# *full_screen = .*/full_screen = 1/' buildozer.spec
+        sed -i 's/^# *android.permissions = .*/android.permissions = INTERNET,BLUETOOTH,BLUETOOTH_ADMIN,ACCESS_FINE_LOCATION/' buildozer.spec
+
     - name: Build APK
       run: buildozer android debug
