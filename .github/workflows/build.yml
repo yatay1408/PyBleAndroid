@@ -38,9 +38,10 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y libgl1-mesa-dev
         sudo apt-get install -y openjdk-11-jdk
-        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip -O commandlinetools.zip
         mkdir -p $HOME/android-sdk/cmdline-tools
-        unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk/cmdline-tools
+        unzip -q commandlinetools.zip -d $HOME/android-sdk/cmdline-tools
+        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
         export ANDROID_HOME=$HOME/android-sdk
         export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$PATH
         yes | sdkmanager --licenses
