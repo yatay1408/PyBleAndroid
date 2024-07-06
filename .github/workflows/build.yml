@@ -33,16 +33,27 @@ jobs:
         pip install kivy bleak
         pip install buildozer cython
 
+    - name: Install Android SDK and AIDL
+      run: |
+        sudo apt-get update
+        sudo apt-get install -y libgl1-mesa-dev
+        sudo apt-get install -y openjdk-11-jdk
+        wget https://dl.google.com/android/repository/commandlinetools-linux-8512546_latest.zip
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        unzip commandlinetools-linux-8512546_latest.zip -d $HOME/android-sdk/cmdline-tools
+        export ANDROID_HOME=$HOME/android-sdk
+        export PATH=$ANDROID_HOME/cmdline-tools/tools/bin:$PATH
+        yes | sdkmanager --licenses
+        sdkmanager "platform-tools" "platforms;android-30" "build-tools;30.0.3" "ndk;21.3.6528147" "extras;android;m2repository" "extras;google;m2repository"
+
     - name: Build APK
       run: |
-        sudo apt update
-        sudo apt install -y libgl1-mesa-dev
         buildozer android debug
       env:
-        ANDROIDSDK: ${{ secrets.ANDROIDSDK }}
-        ANDROIDNDK: ${{ secrets.ANDROIDNDK }}
-        ANDROIDAPI: ${{ secrets.ANDROIDAPI }}
-        ANDROIDMINAPI: ${{ secrets.ANDROIDMINAPI }}
+        ANDROIDSDK: $HOME/android-sdk
+        ANDROIDNDK: $HOME/android-sdk/ndk/21.3.6528147
+        ANDROIDAPI: "30"
+        ANDROIDMINAPI: "21"
 
     - name: Upload APK
       uses: actions/upload-artifact@v2
