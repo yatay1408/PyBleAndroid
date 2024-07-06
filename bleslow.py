@@ -16,7 +16,7 @@ from concurrent.futures import ThreadPoolExecutor
 MAX_PACKET_SIZE = 244  # STM32WB55 typical maximum payload size in bytes
 NUM_PACKETS = 2000
 PACKET_SIZE = 244
-MAX_WORKERS = 10
+MAX_WORKERS = 200
 
 class BLEScannerApp(App):
     previous_data = None  # Store the previous data for comparison
