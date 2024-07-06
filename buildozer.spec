@@ -13,7 +13,7 @@ osx.kivy_version = 2.2.0
 
 # Android specific
 fullscreen = 0
-android.api = 31
+android.api = 30
 android.minapi = 21
 android.sdk = 30
 android.ndk = 23b
