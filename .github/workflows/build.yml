@@ -28,11 +28,22 @@ jobs:
         pip install kivy
         pip install bleak
 
-    - name: Install Buildozer
+    - name: Install Buildozer and Android SDK
       run: |
         sudo apt update
-        sudo apt install -y git zip unzip openjdk-8-jdk
+        sudo apt install -y git zip unzip openjdk-8-jdk wget
         pip install buildozer
+        wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip" -O android-commandline-tools.zip
+        mkdir -p $HOME/android-sdk/cmdline-tools
+        unzip android-commandline-tools.zip -d $HOME/android-sdk/cmdline-tools
+        mv $HOME/android-sdk/cmdline-tools/cmdline-tools $HOME/android-sdk/cmdline-tools/tools
+        yes | $HOME/android-sdk/cmdline-tools/tools/bin/sdkmanager --sdk_root=$HOME/android-sdk "platform-tools" "platforms;android-29" "build-tools;29.0.3"
+        
+    - name: Set up environment variables
+      run: |
+        echo "ANDROID_HOME=$HOME/android-sdk" >> $GITHUB_ENV
+        echo "PATH=$PATH:$HOME/android-sdk/platform-tools" >> $GITHUB_ENV
+        echo "PATH=$PATH:$HOME/android-sdk/build-tools/29.0.3" >> $GITHUB_ENV
 
     - name: Initialize Buildozer
       run: |
