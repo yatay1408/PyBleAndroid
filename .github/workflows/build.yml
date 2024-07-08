@@ -34,8 +34,9 @@ jobs:
       - name: Use Buildozer action
         uses: ArtemSBulgakov/buildozer-action@v1.1.3
         with:
-          build-dir: .
-          buildozer-options: "android debug"
+          command: "android debug"
+          repository_root: "."
+          workdir: "."
 
       - name: Upload APK
         uses: actions/upload-artifact@v2
