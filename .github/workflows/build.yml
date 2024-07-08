@@ -1,4 +1,4 @@
-name: Build Android APK
+name: Build Kivy APK
 
 on:
   push:
@@ -11,40 +11,46 @@ on:
 jobs:
   build:
     runs-on: ubuntu-latest
+
     steps:
-      - name: Check out code
-        uses: actions/checkout@v2
-      
-      - name: Set up Python
-        uses: actions/setup-python@v2
-        with:
-          python-version: '3.8'
-      
-      - name: Update and upgrade packages
-        run: |
-          sudo apt-get update
-          sudo apt-get upgrade -y
+    - name: Checkout repository
+      uses: actions/checkout@v2
 
-      - name: Install dependencies
-        run: |
-          sudo apt-get install -y python3-pip build-essential git python3 python3-dev ffmpeg libsdl2-dev libsdl2-image-dev libsdl2-mixer-dev libsdl2-ttf-dev libportmidi-dev libswscale-dev libavformat-dev libavcodec-dev zlib1g-dev
-          sudo apt-get install -y libgstreamer1.0 gstreamer1.0-plugins-base gstreamer1.0-plugins-good
-          pip install buildozer cython==0.29.19 kivy
+    - name: Set up Python environment
+      uses: actions/setup-python@v2
+      with:
+        python-version: '3.8'
 
-      - name: Install additional dependencies
-        run: |
-          sudo apt-get install -y libunwind-dev
+    - name: Install dependencies
+      run: |
+        python -m pip install --upgrade pip
+        pip install Cython==0.29.19
+        pip install kivy
+        pip install bleak
 
-      - name: Build APK
-        run: |
-          buildozer init
-          cp bleslow.py .
-          cp buildozer.spec .
-          sed -i 's/# android.permissions = INTERNET/android.permissions = INTERNET, BLUETOOTH, BLUETOOTH_ADMIN, ACCESS_FINE_LOCATION/' buildozer.spec
-          buildozer -v android debug
+    - name: Install Buildozer
+      run: |
+        sudo apt update
+        sudo apt install -y git zip unzip openjdk-8-jdk
+        pip install buildozer
 
-      - name: Upload APK
-        uses: actions/upload-artifact@v2
-        with:
-          name: app
-          path: bin/*.apk
+    - name: Initialize Buildozer
+      run: |
+        buildozer init
+
+    - name: Modify buildozer.spec
+      run: |
+        sed -i 's/python3==3.8/python3==3.8/g' buildozer.spec
+        sed -i 's/^# \(android\.ndk_path = \)/\1\/opt\/android\/ndk/g' buildozer.spec
+        sed -i 's/^# \(android\.sdk_path = \)/\1\/opt\/android\/sdk/g' buildozer.spec
+        sed -i 's/^# \(requirements = python3,kivy\)/requirements = python3,kivy,bleak/g' buildozer.spec
+
+    - name: Build APK
+      run: |
+        buildozer android debug
+
+    - name: Upload APK
+      uses: actions/upload-artifact@v2
+      with:
+        name: my-kivy-app
+        path: bin/*.apk
