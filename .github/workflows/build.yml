@@ -52,6 +52,14 @@ jobs:
           echo "$ANDROID_SDK_ROOT/cmdline-tools/latest/bin" >> $GITHUB_ENV
           echo "$ANDROID_SDK_ROOT/platform-tools" >> $GITHUB_ENV
           echo "$ANDROID_SDK_ROOT/build-tools/29.0.3" >> $GITHUB_ENV
+        shell: bash
+
+      - name: Add Android SDK tools to PATH using add-to-path
+        uses: actions/setup-node@v2
+        with:
+          node-version: '14'
+        env:
+          PATH: ${{ github.env.ANDROID_SDK_ROOT }}/cmdline-tools/latest/bin:${{ github.env.ANDROID_SDK_ROOT }}/platform-tools:${{ github.env.ANDROID_SDK_ROOT }}/build-tools/29.0.3:${{ env.PATH }}
 
       - name: Use Buildozer action
         uses: ArtemSBulgakov/buildozer-action@v1.1.3
