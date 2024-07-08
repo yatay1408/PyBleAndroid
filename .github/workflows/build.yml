@@ -33,8 +33,8 @@ jobs:
 
       - name: Install Buildozer and Android SDK
         run: |
-          sudo apt-get update
-          sudo apt-get install -y wget openjdk-8-jdk
+          apt-get update
+          apt-get install -y wget openjdk-8-jdk
           pip install buildozer
           wget -q "https://dl.google.com/android/repository/commandlinetools-linux-7302050_latest.zip" -O android-commandline-tools.zip
           mkdir -p $HOME/android-sdk/cmdline-tools
